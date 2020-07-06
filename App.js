@@ -28,7 +28,7 @@ export class App extends Component {
     };
   }
   async componentDidMount() {
-    const authenticated = await this.checkAuth();
+    await this.checkAuth();
   }
 
   checkAuth = async () => {
@@ -38,20 +38,15 @@ export class App extends Component {
       const decodedToken = jwtDecode(token);
       // Check if the token is still valid
       if (decodedToken.exp * 1000 < Date.now()) {
-        this.setState({initialLoading: false});
         store.dispatch({type: LOADING_DONE});
-        return false;
       } else {
-        this.setState({initialLoading: false});
-
         axios.defaults.headers.common['Authorization'] = token;
 
         store.dispatch({type: SET_AUTHENTICATED});
         store.dispatch({type: LOADING_DONE});
-        return true;
       }
     }
-    return false;
+    this.setState({initialLoading: false});
   };
 
   render() {
